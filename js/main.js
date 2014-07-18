@@ -1,16 +1,7 @@
 $(document).ready(function(){
 	var lat,lng,radius, query_type;	
     var items = new Array();
-function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(-34.397, 150.644),
-          zoom: 8
-        };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
-
+    var marker = new Array();
 $(".location").geocomplete();
 
 
@@ -60,9 +51,11 @@ $.getJSON('https://api.foursquare.com/v2/venues/explore?client_id=W3BDCS3X5UJM4L
         {          
           'name': data.response.groups[0].items[i].venue.name,
           'rating': data.response.groups[0].items[i].venue.rating,       
-          'price': data.response.groups[0].items[i].venue.price.tier
+          'price': data.response.groups[0].items[i].venue.price.tier,
+          'lat': data.response.groups[0].items[i].venue.location.lat,
+          'lng': data.response.groups[0].items[i].venue.location.lng
         }        
-        ]
+        ]      
         }
         catch(e){
           if(e){
@@ -71,11 +64,24 @@ $.getJSON('https://api.foursquare.com/v2/venues/explore?client_id=W3BDCS3X5UJM4L
         }
       }
 
-        // console.log(data.response.groups[0].items[i].venue.name);
-        // console.log(data.response.groups[0].items[i].venue.rating);
-        // console.log(data.response.groups[0].items[i].venue.price.tier)
+      items.sort(function(obj1, obj2) {
+  // Ascending: first age less than the previous
+        return obj2.value - obj1.value;
+      });
 
       console.log(items);
+
+        // console.log(data.response.groups[0].items[i].venue.name);
+        // console.log(data.response.groups[0].items[i].venue.rating);
+        // console.log(data.response.groups[0].items[i].venue.price.tier);
+
+        for(var iCount = 0; iCount <= items.length; iCount++)
+        {          
+          marker[iCount] = new google.maps.LatLng(items[iCount][0].lat, items[iCount][0].lng);    
+          console.log(items[iCount][0].lat);
+          console.log(items[iCount][0].lng);
+        }      
+
 
 
 });
@@ -93,3 +99,10 @@ $.getJSON('https://api.foursquare.com/v2/venues/explore?client_id=W3BDCS3X5UJM4L
 
 });
 
+function addMarker(location) {
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  markers.push(marker);
+}

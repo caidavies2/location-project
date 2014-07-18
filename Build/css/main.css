@@ -93,6 +93,11 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+#map-canvas
+{
+    height:500px;
+}
+
 .wrapper-main
 {
     padding:120px 40px;
