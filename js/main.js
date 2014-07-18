@@ -1,5 +1,6 @@
 $(document).ready(function(){
-	var lat,lng;	
+	var lat,lng,radius, query_type;	
+    var items = new Array();
 function initialize() {
         var mapOptions = {
           center: new google.maps.LatLng(-34.397, 150.644),
@@ -45,16 +46,36 @@ function getVenues(latitude, longitude)
 
 $("#results").html('');
 radius = $("#radius").val();
-
-$.getJSON('https://api.foursquare.com/v2/venues/explore?client_id=W3BDCS3X5UJM4LOU23B11OFFREDRJERTITLVCGNX1BASQXD3&client_secret=NQX4QLCGUXYRX5GTPKJQCWYZQWTP5ZIYNINMJPVSGO3ZLWCP%20&v=20130815%20&ll=' + lat + ',' + lng + '%20&query=restaurant&limit=10&radius=' + radius,
+query_type = $("#query-type").val();
+$.getJSON('https://api.foursquare.com/v2/venues/explore?client_id=W3BDCS3X5UJM4LOU23B11OFFREDRJERTITLVCGNX1BASQXD3&client_secret=NQX4QLCGUXYRX5GTPKJQCWYZQWTP5ZIYNINMJPVSGO3ZLWCP%20&v=20130815%20&ll=' + lat + ',' + lng + '%20&query=' + query_type + '&radius=' + radius,
     function(data) {
       console.log(data.response.groups[0]);
-      
+
       for (var i = 0; i <9; i++)
       {
-        console.log(data.response.groups[0].items[i].venue.name);
-        console.log(data.response.groups[0].items[i].venue.rating);
+        try
+        { 
+        items[i]=
+        [
+        {          
+          'name': data.response.groups[0].items[i].venue.name,
+          'rating': data.response.groups[0].items[i].venue.rating,       
+          'price': data.response.groups[0].items[i].venue.price.tier
+        }        
+        ]
+        }
+        catch(e){
+          if(e){
+            console.log("error");
+          }
+        }
       }
+
+        // console.log(data.response.groups[0].items[i].venue.name);
+        // console.log(data.response.groups[0].items[i].venue.rating);
+        // console.log(data.response.groups[0].items[i].venue.price.tier)
+
+      console.log(items);
 
 
 });
